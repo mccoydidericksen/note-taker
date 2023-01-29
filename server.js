@@ -45,3 +45,15 @@ app.post('/api/notes', (req, res) => {
         res.error('Error in adding note');
     }
 });
+
+// DELETE Route for a note
+app.delete('/api/notes/:id', (req, res) => {
+    console.info(`${req.method} request received to delete a note`);
+    const id = req.params.id;
+    if (id) {
+        const newNotes = notes.filter(note => note.id !== parseInt(id));
+        fs.writeFileSync('./db/db.json', JSON.stringify(newNotes));
+    } else {
+        res.error('Error in deleting note');
+    }
+});
