@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 
-const PORT = 3001;
+const PORT = process.env.PORT || 80
 const app = express();
 
 // Middleware for parsing JSON and urlencoded form data
@@ -62,5 +62,5 @@ app.delete('/api/notes/', (req, res) => {
 });
 
 app.listen(PORT, () =>
-  console.log(`App listening at http://localhost:${PORT}`)
+  console.log(`App listening at ${PORT}`)
 );
