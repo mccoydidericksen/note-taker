@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const notes = require('./db/db.json');
 
 const PORT = 3001;
 const app = express();
@@ -25,6 +24,7 @@ app.get('/notes', (req, res) =>
 // GET Route for retrieving all the notes
 app.get('/api/notes', (req, res) => {
     console.info(`${req.method} request received for notes`);
+    const notes = JSON.parse(fs.readFileSync('./db/db.json', 'utf8'));
     res.json(notes);
 });
 
@@ -32,6 +32,7 @@ app.get('/api/notes', (req, res) => {
 app.post('/api/notes', (req, res) => {
     console.info(`${req.method} request received to add a note`);
     const { title, text } = req.body;
+    const notes = JSON.parse(fs.readFileSync('./db/db.json', 'utf8'));
     if (req.body) {
         const newNote = {
             title,
@@ -47,13 +48,19 @@ app.post('/api/notes', (req, res) => {
 });
 
 // DELETE Route for a note
-app.delete('/api/notes/:id', (req, res) => {
+app.delete('/api/notes/', (req, res) => {
     console.info(`${req.method} request received to delete a note`);
-    const id = req.params.id;
+    const id = req.body.id;
+    const notes = JSON.parse(fs.readFileSync('./db/db.json', 'utf8'));
     if (id) {
         const newNotes = notes.filter(note => note.id !== parseInt(id));
         fs.writeFileSync('./db/db.json', JSON.stringify(newNotes));
     } else {
         res.error('Error in deleting note');
     }
+    res.send('Note deleted successfully!');
 });
+
+app.listen(PORT, () =>
+  console.log(`App listening at http://localhost:${PORT}`)
+);
